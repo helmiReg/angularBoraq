@@ -50,6 +50,6 @@
 
   </table>
   <mat-paginator [length]="totalElements"
-                 [pageSizeOptions]="[5, 10, 15, 20]"
+                 [pageSizeOptions]="pageSizeOptions"
                  (page)="onChangePaginate($event)" #paginator></mat-paginator>
 </div>

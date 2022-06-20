@@ -24,6 +24,7 @@ import {MatDialogModule} from "@angular/material/dialog";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { ProviderDialogComponent } from './components/provider-dialog/provider-dialog.component';
 import { SimpleDialogComponent } from './shared/simple-dialog/simple-dialog.component';
+import { MatSnackBarModule} from "@angular/material/snack-bar";
 
 
 @NgModule({
@@ -52,6 +53,7 @@ import { SimpleDialogComponent } from './shared/simple-dialog/simple-dialog.comp
     MatSortModule,
     MatProgressSpinnerModule,
     MatDialogModule,
+    MatSnackBarModule,
     FormsModule,
     ReactiveFormsModule,
     AppRoutingModule,

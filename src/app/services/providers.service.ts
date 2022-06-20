@@ -1,25 +1,29 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs";
-
+import {environment} from "../../environments/environment";
+import {Provider} from "../models/provider";
+import {Page} from "../models/page";
 @Injectable({
   providedIn: 'root'
 })
 export class ProvidersService {
 
-  public baseUrl = 'http://localhost:8080'
+  public baseUrl = environment.baseUrl;
   constructor(private http:HttpClient) { }
 
-  getAll = (params: any) => {
-    if(params.name && params.name !== '' && params.sortBy){
-      return this.http.get(this.baseUrl + `/provider`, { params: new HttpParams().set('page', params.page).set('size', params.size).set('name', params.name).set('sortBy', params.sortBy).set('sortDirection', params.sortDirection) });
-    }else if(params.sortBy && params.sortDirection) {
-      return this.http.get(this.baseUrl + `/provider`, { params: new HttpParams().set('page', params.page).set('size', params.size).set('sortBy', params.sortBy).set('sortDirection', params.sortDirection) });
-
-    }else if(params.name) {
-      return this.http.get(this.baseUrl + `/provider`, { params: new HttpParams().set('page', params.page).set('size', params.size).set('name', params.name)});
-    }else
-    return this.http.get(this.baseUrl + `/provider/all`, { params: new HttpParams().set('page', params.page).set('size', params.size) });
+  getAll = (params: { page: number; size: number; name?: string; sortBy?:string; sortDirection?: string }) => {
+ let httpParams = new HttpParams().set('page', params.page).set('size', params.size);
+ if(params.name) {
+   httpParams = httpParams.set('name', params.name);
+ }
+ if(params.sortBy) {
+   httpParams = httpParams.set('sortBy', params.sortBy);
+ }
+ if(params.sortDirection) {
+   httpParams = httpParams.set('sortDirection', params.sortDirection);
+ }
+    return this.http.get<Page<Provider>>(this.baseUrl + `/provider`,{ params: httpParams});
   };
 
   soldeTotal = () => {
@@ -29,8 +33,7 @@ export class ProvidersService {
     return this.http.get(this.baseUrl + `/provider/${id}`);
   };
 
-  create = (data: any) => {
-    console.log("provider=====",data);
+  create (data: any) {
     return this.http.post(this.baseUrl + "/provider/add", data);
   };
 

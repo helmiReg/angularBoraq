@@ -24,13 +24,14 @@ import {ProviderDialogComponent} from "../provider-dialog/provider-dialog.compon
 export class ProvidersComponent implements OnInit, AfterViewInit, OnChanges {
   dataSource: any;
   displayedColumns= ["name", "solde", "actions"];
-  totalElements: number;
+  pageSizeOptions= [5, 10, 15, 20];
+  totalElements?: number;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   sortDirection: string;
   sortActive: string;
   @Input() input: string = '';
-  params = {name: '', page: 0, size: 5, sortBy: '', sortDirection: 'ASC'};
+  params = { page: 0, size: 5,name: '', sortBy: 'solde', sortDirection: 'ASC'};
 
   constructor(private route: ActivatedRoute, private providersService: ProvidersService, private dialog: MatDialog) {
   }
@@ -51,9 +52,7 @@ export class ProvidersComponent implements OnInit, AfterViewInit, OnChanges {
     this.dialog.open(ProviderDialogComponent, dialogConfig);
   }
   onChangePaginate(event: PageEvent) {
-      console.log(event.pageIndex);
       this.paginator.pageIndex = event.pageIndex;
-      console.log(event.pageSize);
       this.paginator.pageSize = event.pageSize;
       this.params.page = event.pageIndex;
       this.params.size = event.pageSize;
@@ -62,7 +61,6 @@ export class ProvidersComponent implements OnInit, AfterViewInit, OnChanges {
   }
   onKey(event: any) { // without type info
     this.input = event.target.value;
-    console.log('input==', this.input);
     this.paginator.pageIndex = 0;
     this.params.page = 0;
     this.params.name = this.input;
@@ -72,16 +70,13 @@ export class ProvidersComponent implements OnInit, AfterViewInit, OnChanges {
 
     if (!name || name==='') {
       this.providersService.getAll(this.params).subscribe((data) => {
-        console.log('data==============', data);
-        // @ts-ignore
+
         this.dataSource = data.content;
-        // @ts-ignore
         this.totalElements = data.totalElements;
 
       });
     } else {
       this.providersService.getAll(this.params).subscribe((data) => {
-        console.log('data===with==name====', data);
         // @ts-ignore
         this.dataSource = data.content;
         // @ts-ignore
@@ -92,43 +87,19 @@ export class ProvidersComponent implements OnInit, AfterViewInit, OnChanges {
   }
   announceSortChange(sortState: Sort) {
     if(sortState.active) {
-      console.log('SOrt===', sortState + 'SOrt===', sortState.active + 'sortDirection===', sortState.direction);
       // @ts-ignore
       this.params.sortBy = sortState.active.valueOf();
-      console.log('sortBy===', this.params.sortBy);
       this.sortDirection = sortState.direction.toUpperCase();
       // @ts-ignore
       this.params.sortDirection = this.sortDirection;
-      console.log('Direction= ', this.sortDirection);
       this.sortActive = sortState.active;
       // @ts-ignore
       this.reload(this.input);
     }
 
   }
-   getRequestParams(page: number, pageSize: number, sortBy?: string, sortDirection?: string) {
-    let params = this.params;
-    if (page) {
-      // @ts-ignore
-      params["page"] = page - 1;
-    }
 
-    if (pageSize) {
-      // @ts-ignore
-      params["size"] = pageSize;
-    }
-
-     if (sortBy) {
-       // @ts-ignore
-       params["sortBy"] = sortBy;
-     }
-     if (sortDirection) {
-       // @ts-ignore
-       params["sortDirection"] = sortDirection;
-     }
-    return params;
-  };
-
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges(changes: SimpleChanges): void {
   }
+
 }
